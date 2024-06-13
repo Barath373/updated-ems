@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffcccc; /* Light red background color */
+      color: #333; /* Dark text color */
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff; /* White background color */
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .input-field {
+      margin-bottom: 20px;
+    }
+
+    .input-field label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .input-field input {
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Admin Login</h1>
+    <form id="login-form">
+      <div class="input-field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+      <div class="input-field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit" class="button">Login</button>
+    </form>
+  </div>
+  <script>
+    const loginForm = document.getElementById('login-form');
+
+    loginForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // Hardcoded admin username and password
+      const adminUsername = 'admin';
+      const adminPassword = 'admin123';
+
+      if (username === adminUsername && password === adminPassword) {
+        console.log('Admin login successful');
+        alert('Admin login successful');
+        // Redirect to admin page
+        window.location.href = 'admindisplay.html';
+      } else {
+        console.log('Invalid username or password');
+        alert('Invalid username or password');
+      }
+    });
+  </script>
+</body>
+</html>

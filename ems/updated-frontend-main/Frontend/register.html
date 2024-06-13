@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Form</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: fit-content;
+      margin: 0 auto;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    .input-field {
+      margin-bottom: 15px;
+    }
+
+    .input-field label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .input-field input {
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    .button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Registration Form</h1>
+    <form id="register-form">
+      <div class="input-field">
+        <label for="id">ID (Generated Automatically)</label>
+        <input type="text" id="id" name="id" required readonly>
+      </div>
+      <div class="input-field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+      <div class="input-field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit" class="button">Register</button>
+    </form>
+  </div>
+
+  <script>
+    const registerForm = document.getElementById('register-form');
+    const idInput = document.getElementById('id');
+
+    // Generate a random ID on page load
+    function generateRandomId() {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let id = '';
+      for (let i = 0; i < 10; i++) {
+        id += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      return id;
+    }
+
+    idInput.value = generateRandomId();
+
+    registerForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const userData = {
+        id: idInput.value,
+        name: username,
+        password: password
+      };
+
+      console.log(userData);
+
+      try {
+        const response = await fetch('http://localhost:5000/api/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userData)
+        });
+
+        if (response.ok) {
+          // Check the content type to decide how to parse the response
+          const contentType = response.headers.get('Content-Type');
+          let responseData;
+
+          if (contentType && contentType.includes('application/json')) {
+            responseData = await response.json();
+          } else {
+            responseData = await response.text();
+          }
+
+          alert(responseData);
+          console.log('User created:', responseData);
+        } else {
+          console.error('Failed to create user:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+</html>

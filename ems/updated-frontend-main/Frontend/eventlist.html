@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Events</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0; /* Light gray background */
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      background-color: #4CAF50; /* Green */
+      color: white;
+      padding: 10px;
+      text-align: center;
+      margin-top: 0;
+      border-radius: 5px 5px 0 0;
+    }
+
+    .event-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .event-list-item {
+      background-color: #ffffff; /* White */
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-title {
+      font-weight: bold;
+      color: #333; /* Dark gray */
+      margin-bottom: 5px;
+    }
+
+    .event-property {
+      color: #666; /* Medium gray */
+      margin-bottom: 5px;
+    }
+
+    .button {
+      background-color: #4CAF50; /* Green */
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .button.edit {
+      background-color: #FFA500; /* Orange */
+    }
+
+    .button.delete {
+      background-color: #FF0000; /* Red */
+    }
+
+    .button:hover {
+      background-color: #45a049; /* Darker green on hover */
+    }
+
+    .button.edit:hover {
+      background-color: #e68a00; /* Darker orange on hover */
+    }
+
+    .button.delete:hover {
+      background-color: #e60000; /* Darker red on hover */
+    }
+  </style>
+</head>
+<body>
+  <h1>All Events</h1>
+  <ul id="event-list" class="event-list"></ul>
+  <script>
+    const eventList = document.getElementById('event-list');
+
+    async function fetchEvents() {
+      try {
+        const response = await fetch('http://localhost:5000/api/getAllEvents');
+        const events = await response.json();
+
+        events.forEach(event => {
+          const listItem = document.createElement('li');
+          listItem.classList.add('event-list-item');
+
+          const titleElement = document.createElement('h3');
+          titleElement.classList.add('event-title');
+          titleElement.textContent = event.title;
+
+          const descriptionElement = document.createElement('p');
+          descriptionElement.classList.add('event-property');
+          descriptionElement.textContent = `Description: ${event.description}`;
+
+          const dateObject = new Date(event.date);
+
+          const dateElement = document.createElement('p');
+          dateElement.classList.add('event-property');
+          dateElement.textContent = `Date: ${dateObject.toLocaleDateString()}`;
+
+          const ownerIdElement = document.createElement('p');
+          ownerIdElement.classList.add('event-property');
+          ownerIdElement.textContent = `Owner ID: ${event.owner_id}`;
+
+          const editButton = document.createElement('button');
+          editButton.classList.add('button', 'edit');
+          editButton.textContent = 'Edit';
+          editButton.addEventListener('click', () => {
+            editEvent(event.id);
+          });
+
+          const deleteButton = document.createElement('button');
+          deleteButton.classList.add('button', 'delete');
+          deleteButton.textContent = 'Delete';
+          deleteButton.addEventListener('click', () => {
+            deleteEvent(event.id);
+          });
+
+          listItem.appendChild(titleElement);
+          listItem.appendChild(descriptionElement);
+          listItem.appendChild(dateElement);
+          listItem.appendChild(ownerIdElement);
+          listItem.appendChild(editButton);
+          listItem.appendChild(deleteButton);
+
+          eventList.appendChild(listItem);
+        });
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    }
+
+    function editEvent(eventId) {
+      // Redirect to the editEvent page with the event ID
+      window.location.href = `editEvent.html?eventId=${eventId}`;
+    }
+
+    async function deleteEvent(eventId) {
+      if (confirm(`Are you sure you want to delete event with ID: ${eventId}?`)) {
+        try {
+          const response = await fetch(`http://localhost:5000/api/deleteEvent/${eventId}`, {
+            method: 'DELETE'
+          });
+          if (response.ok) {
+            alert('Event deleted successfully');
+            fetchEvents(); // Refresh the event list
+          } else {
+            alert('Failed to delete event');
+          }
+        } catch (error) {
+          console.error('Error deleting event:', error);
+        }
+      }
+    }
+
+    fetchEvents();
+  </script>
+</body>
+</html>
